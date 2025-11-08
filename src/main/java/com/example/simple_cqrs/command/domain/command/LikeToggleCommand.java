@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikePostCommand {
+public class LikeToggleCommand {
 
     @NotNull
     private UUID postId;

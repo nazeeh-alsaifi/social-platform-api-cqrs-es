@@ -83,10 +83,18 @@ public class EventStoreRepository {
                 case "PostLikedEvent":
                     applyPostLikedEvent(post, row.getUserId());
                     break;
+                case "PostUnlikedEvent":
+                    applyPostUnlikedEvent(post, row.getUserId());
+                    break;
             }
         }
 
         return post;
+    }
+
+    private void applyPostUnlikedEvent(Post post, String userId) {
+        post.setVersion(post.getVersion() + 1);
+        post.getLikedUsers().remove(userId);
     }
 
     private void applyPostLikedEvent(Post post, String userId) {

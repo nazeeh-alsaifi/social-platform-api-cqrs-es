@@ -1,9 +1,6 @@
 package com.example.simple_cqrs.command.domain;
 
-import com.example.simple_cqrs.command.domain.event.PostApprovedEvent;
-import com.example.simple_cqrs.command.domain.event.PostCreatedEvent;
-import com.example.simple_cqrs.command.domain.event.PostLikedEvent;
-import com.example.simple_cqrs.command.domain.event.PostRejectedEvent;
+import com.example.simple_cqrs.command.domain.event.*;
 import com.example.simple_cqrs.shared.DomainEvent;
 import com.example.simple_cqrs.shared.exception.CustomValidationException;
 import com.example.simple_cqrs.shared.util.SecurityUtils;
@@ -47,19 +44,20 @@ public class Post {
         domainEvents.add(event);
     }
 
-    private void clearAndAddEvent(DomainEvent event) {
-        domainEvents.clear();
-        domainEvents.add(event);
-    }
 
-    public void like(){
-        if(likedUsers.contains(SecurityUtils.getCurrentUsername())){
-            throw new CustomValidationException("already liked the post");
-
-        }
+    public void toggleLike() {
         this.version++;
-        addEvent(new PostLikedEvent(UUID.randomUUID(), this.postId, SecurityUtils.getCurrentUsername(),
-                Instant.now()));
+
+        String currentUsername = SecurityUtils.getCurrentUsername();
+
+        if (likedUsers.contains(currentUsername)) {
+            addEvent(new PostUnlikedEvent(UUID.randomUUID(), this.postId, currentUsername,
+                    Instant.now()));
+
+        } else {
+            addEvent(new PostLikedEvent(UUID.randomUUID(), this.postId, currentUsername,
+                    Instant.now()));
+        }
 
     }
 
@@ -76,7 +74,7 @@ public class Post {
                 Instant.now()));
     }
 
-    public void reject( String reason) {
+    public void reject(String reason) {
         if (this.status != PostStatus.PENDING) {
             throw new CustomValidationException("only pending posts can be rejected");
         }

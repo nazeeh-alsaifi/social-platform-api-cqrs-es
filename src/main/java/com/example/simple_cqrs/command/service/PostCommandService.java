@@ -2,7 +2,7 @@ package com.example.simple_cqrs.command.service;
 
 import com.example.simple_cqrs.command.domain.Post;
 import com.example.simple_cqrs.command.domain.command.CreatePostCommand;
-import com.example.simple_cqrs.command.domain.command.LikePostCommand;
+import com.example.simple_cqrs.command.domain.command.LikeToggleCommand;
 import com.example.simple_cqrs.command.repository.EventStoreRepository;
 import com.example.simple_cqrs.shared.DomainEvent;
 import com.example.simple_cqrs.shared.EventPublisher;
@@ -38,11 +38,11 @@ public class PostCommandService {
         return post.getPostId();
     }
 
-    public UUID likePost(@Valid LikePostCommand command) {
+    public UUID toggleLike(@Valid LikeToggleCommand command) {
         Post post = eventStoreRepository.findById(command.getPostId())
                 .orElseThrow(() -> new PostNotFoundException("post not found: " + command.getPostId()));
 
-        post.like();
+        post.toggleLike();
 
         try {
             eventStoreRepository.save(post);

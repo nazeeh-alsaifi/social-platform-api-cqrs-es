@@ -2,7 +2,7 @@ package com.example.simple_cqrs.command.controller;
 
 import com.example.simple_cqrs.command.domain.command.CreatePostCommand;
 import com.example.simple_cqrs.command.domain.PostStatus;
-import com.example.simple_cqrs.command.domain.command.LikePostCommand;
+import com.example.simple_cqrs.command.domain.command.LikeToggleCommand;
 import com.example.simple_cqrs.command.service.PostCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +40,10 @@ public class PostCommandController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/like")
+    @PostMapping("/like/toggle")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Map<String, Object>> likePost(@RequestBody @Valid LikePostCommand command) {
-        UUID postId = postCommandService.likePost(command);
+    public ResponseEntity<Map<String, Object>> toggleLike(@RequestBody @Valid LikeToggleCommand command) {
+        UUID postId = postCommandService.toggleLike(command);
 
         Map<String, Object> response = new HashMap<>();
         response.put("postId", postId.toString());
