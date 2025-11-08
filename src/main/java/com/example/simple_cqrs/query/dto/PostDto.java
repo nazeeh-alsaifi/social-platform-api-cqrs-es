@@ -20,4 +20,6 @@ public class PostDto {
     private Instant approvedAt;
     private Instant rejectedAt;
     private String rejectionReason;
+    private Integer likeCount;
+    private Integer commentCount;
 }

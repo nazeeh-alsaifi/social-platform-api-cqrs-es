@@ -44,6 +44,12 @@ public class PostView {
     @Version
     private Long version;
 
+    @Column(nullable = false)
+    private Integer likeCount = 0;
+
+    @Column(nullable = false)
+    private Integer commentCount = 0;
+
     public PostView(UUID postId, String userId, String username, String content, PostStatus postStatus,
                     Instant eventTimestamp) {
         this.postId=postId;

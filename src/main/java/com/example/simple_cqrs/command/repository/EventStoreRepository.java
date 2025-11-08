@@ -45,8 +45,7 @@ public class EventStoreRepository {
     }
 
     public Optional<Post> findById(UUID postId) {
-        List<EventStoreEntry> rows = eventStoreJpaRepository.findByAggregateIdOrderByVersionAsc(
-                postId);
+        List<EventStoreEntry> rows = eventStoreJpaRepository.findByAggregateIdOrderByVersionAsc(postId);
 
         if (rows.isEmpty()) {
             return Optional.empty();
@@ -81,10 +80,18 @@ public class EventStoreRepository {
                 case "PostRejectedEvent":
                     applyPostRejectedEvent(post);
                     break;
+                case "PostLikedEvent":
+                    applyPostLikedEvent(post, row.getUserId());
+                    break;
             }
         }
 
         return post;
+    }
+
+    private void applyPostLikedEvent(Post post, String userId) {
+        post.setVersion(post.getVersion() + 1);
+        post.getLikedUsers().add(userId);
     }
 
     private void applyPostRejectedEvent(Post post) {

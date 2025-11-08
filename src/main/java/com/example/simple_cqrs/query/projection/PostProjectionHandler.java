@@ -3,6 +3,7 @@ package com.example.simple_cqrs.query.projection;
 import com.example.simple_cqrs.command.domain.event.PostApprovedEvent;
 import com.example.simple_cqrs.command.domain.event.PostCreatedEvent;
 import com.example.simple_cqrs.command.domain.PostStatus;
+import com.example.simple_cqrs.command.domain.event.PostLikedEvent;
 import com.example.simple_cqrs.command.domain.event.PostRejectedEvent;
 import com.example.simple_cqrs.query.model.PostView;
 import com.example.simple_cqrs.query.repository.PostViewRepository;
@@ -57,6 +58,19 @@ public class PostProjectionHandler {
             postView.setRejectedAt(event.getTimestamp());
             postViewRepository.save(postView);
             log.info("updated PostView status to Rejected for postId: {}", event.getAggregateId());
+        });
+    }
+
+    @EventListener
+    public void handlePostLiked(PostLikedEvent event){
+        log.info("handling PostLiked for postId: {}", event.getAggregateId());
+
+        postViewRepository.findById(event.getAggregateId()).ifPresent(postView -> {
+            postView.setStatus(PostStatus.REJECTED);
+            postView.setRejectedAt(event.getTimestamp());
+            postView.setLikeCount(postView.getLikeCount() + 1 );
+            postViewRepository.save(postView);
+            log.info("updated PostView status to liked for postId: {}", event.getAggregateId());
         });
     }
 }

@@ -66,6 +66,8 @@ public class PostQueryService {
         dto.setApprovedAt(postView.getApprovedAt());
         dto.setRejectedAt(postView.getRejectedAt());
         dto.setRejectionReason(postView.getRejectionReason());
+        dto.setLikeCount(postView.getLikeCount());
+        dto.setCommentCount(postView.getCommentCount());
         return dto;
     }
 

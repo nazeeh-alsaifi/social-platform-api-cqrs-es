@@ -2,6 +2,7 @@ package com.example.simple_cqrs.command.controller;
 
 import com.example.simple_cqrs.command.domain.command.CreatePostCommand;
 import com.example.simple_cqrs.command.domain.PostStatus;
+import com.example.simple_cqrs.command.domain.command.LikePostCommand;
 import com.example.simple_cqrs.command.service.PostCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,18 @@ public class PostCommandController {
         Map<String, Object> response = new HashMap<>();
         response.put("postId", postId.toString());
         response.put("status", PostStatus.PENDING);
+        response.put("createdAt", Instant.now());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/like")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Map<String, Object>> likePost(@RequestBody @Valid LikePostCommand command) {
+        UUID postId = postCommandService.likePost(command);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("postId", postId.toString());
         response.put("createdAt", Instant.now());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
