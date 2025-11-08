@@ -3,6 +3,23 @@ spring:
     url: jdbc:h2:mem:mydb
     username: sa
   application:
-    name: simple_cqrs
+    name: social_app
   jpa:
     show-sql: true
+
+logging:
+  file:
+    name: social_app.log
+    path: ~/spring_logs
+  logback:
+    rollingpolicy:
+      file-name-pattern: social_app-%d{yyyy-MM-dd}-%i.log
+  level:
+    root: info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
