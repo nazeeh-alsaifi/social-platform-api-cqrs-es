@@ -1,6 +1,7 @@
 package com.example.simple_cqrs.shared;
 
-import com.example.simple_cqrs.shared.exception.CustomException;
+import com.example.simple_cqrs.shared.exception.CustomValidationException;
+import com.example.simple_cqrs.shared.exception.PostConcurrentModificationException;
 import com.example.simple_cqrs.shared.exception.PostNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "INVALID_INPUT", String.valueOf(errors));
     }
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-//        return buildErrorResponse(HttpStatus.BAD_REQUEST, "INVALID_INPUT", ex.getMessage());
-//    }
+    @ExceptionHandler(CustomValidationException.class)
+    public ResponseEntity<Map<String, String>> handleCustomValidationException(CustomValidationException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "INVALID_INPUT",
+                ex.getMessage());
+    }
+
 
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<Map<String, String>> handlePostNotFound(PostNotFoundException ex) {
@@ -39,10 +42,11 @@ public class GlobalExceptionHandler {
                 ex.getMessage());
     }
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<Map<String, String>> handleCustomException(CustomException ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "BAD_REQUEST",
-                ex.getMessage());
+    @ExceptionHandler(PostConcurrentModificationException.class)
+    public ResponseEntity<Map<String, String>> handlePostConcurrent(PostConcurrentModificationException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, "CONCURRENT_MODIFICATION",
+                "Post has been modified by another user. Please reload and " +
+                        "try again.");
     }
 
     @ExceptionHandler(Exception.class)

@@ -4,9 +4,8 @@ import com.example.simple_cqrs.command.domain.event.PostApprovedEvent;
 import com.example.simple_cqrs.command.domain.event.PostCreatedEvent;
 import com.example.simple_cqrs.command.domain.event.PostRejectedEvent;
 import com.example.simple_cqrs.shared.DomainEvent;
-import com.example.simple_cqrs.shared.exception.CustomException;
+import com.example.simple_cqrs.shared.exception.CustomValidationException;
 import com.example.simple_cqrs.shared.util.SecurityUtils;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -55,7 +54,7 @@ public class Post {
 
     public void approve() {
         if (this.status != PostStatus.PENDING) {
-            throw new CustomException("only pending posts can be approved");
+            throw new CustomValidationException("only pending posts can be approved");
         }
 
         this.status = PostStatus.APPROVED;
@@ -67,7 +66,7 @@ public class Post {
 
     public void reject( String reason) {
         if (this.status != PostStatus.PENDING) {
-            throw new CustomException("only pending posts can be rejected");
+            throw new CustomValidationException("only pending posts can be rejected");
         }
 
         this.status = PostStatus.REJECTED;

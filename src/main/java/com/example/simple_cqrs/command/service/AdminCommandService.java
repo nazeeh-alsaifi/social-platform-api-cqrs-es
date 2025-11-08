@@ -6,8 +6,10 @@ import com.example.simple_cqrs.command.domain.command.RejectPostCommand;
 import com.example.simple_cqrs.command.repository.EventStoreRepository;
 import com.example.simple_cqrs.shared.DomainEvent;
 import com.example.simple_cqrs.shared.EventPublisher;
+import com.example.simple_cqrs.shared.exception.PostConcurrentModificationException;
 import com.example.simple_cqrs.shared.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +25,11 @@ public class AdminCommandService {
 
         post.approve();
 
-        eventStoreRepository.save(post);
+        try {
+            eventStoreRepository.save(post);
+        } catch (DataIntegrityViolationException exception) {
+            throw new PostConcurrentModificationException();
+        }
 
         // publish events for query side
         for (DomainEvent event : post.getDomainEvents()) {
@@ -38,8 +44,11 @@ public class AdminCommandService {
 
         post.reject(command.getReason());
 
-        eventStoreRepository.save(post);
-
+        try {
+            eventStoreRepository.save(post);
+        } catch (DataIntegrityViolationException exception) {
+            throw new PostConcurrentModificationException();
+        }
 
         // publish events for query side
         for (DomainEvent event : post.getDomainEvents()) {
