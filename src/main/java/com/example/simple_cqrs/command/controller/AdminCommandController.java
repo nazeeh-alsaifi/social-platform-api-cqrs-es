@@ -6,6 +6,7 @@ import com.example.simple_cqrs.command.service.AdminCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +20,17 @@ public class AdminCommandController {
     private final AdminCommandService adminCommandService;
 
     @PostMapping("/approve")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> approvePost(@RequestBody @Valid ApprovePostCommand approvePostCommand) {
         adminCommandService.approvePost(approvePostCommand);
-
-
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reject")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> rejectPost(@RequestBody @Valid RejectPostCommand rejectPostCommand) {
         adminCommandService.rejectPost(rejectPostCommand);
-
 
         return ResponseEntity.ok().build();
     }

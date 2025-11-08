@@ -26,10 +26,13 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/commands/**").hasRole("USER")
-                        .requestMatchers("/api/queries/**").hasRole("USER")
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/h2-console/**").permitAll())
+
+//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/commands/**").hasRole("USER")
+//                        .requestMatchers("/api/queries/**").hasRole("USER")
+//                        .requestMatchers("/api/queries/**").hasRole("USER")
 
                 .httpBasic(Customizer.withDefaults())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
