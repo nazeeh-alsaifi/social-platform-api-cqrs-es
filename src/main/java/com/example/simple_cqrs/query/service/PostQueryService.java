@@ -37,6 +37,15 @@ public class PostQueryService {
         return mapToPageResponse(postFeed);
     }
 
+    public PageResponse<PostDto> getPendingPosts(int page, int size) {
+        if (size > 20) size = 20;
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostView> pendingPosts = postViewRepository.findByStatusOrderByCreatedAtDesc(PostStatus.PENDING, pageable);
+
+        return mapToPageResponse(pendingPosts);
+    }
+
     private PageResponse<PostDto> mapToPageResponse(Page<PostView> postPage) {
         return new PageResponse<>(
                 postPage.getContent().stream().map(this::mapToDto).toList(),
@@ -55,11 +64,9 @@ public class PostQueryService {
         dto.setStatus(postView.getStatus());
         dto.setCreatedAt(postView.getCreatedAt());
         dto.setApprovedAt(postView.getApprovedAt());
+        dto.setRejectedAt(postView.getRejectedAt());
         dto.setRejectionReason(postView.getRejectionReason());
-        dto.setLikeCount(postView.getLikeCount());
-        dto.setCommentCount(postView.getCommentCount());
         return dto;
     }
-
 
 }

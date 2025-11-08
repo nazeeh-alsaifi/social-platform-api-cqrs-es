@@ -14,5 +14,6 @@ public interface PostViewRepository extends JpaRepository<PostView, UUID> {
     Page<PostView> findByUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
 
     Page<PostView> findByStatusOrderByApprovedAtDesc(PostStatus status, Pageable pageable);
+    Page<PostView> findByStatusOrderByCreatedAtDesc(PostStatus status, Pageable pageable);
 
 }

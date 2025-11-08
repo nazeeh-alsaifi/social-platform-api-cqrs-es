@@ -54,6 +54,7 @@ public class PostProjectionHandler {
         postViewRepository.findById(event.getAggregateId()).ifPresent(postView -> {
             postView.setStatus(PostStatus.REJECTED);
             postView.setRejectionReason(event.getRejectionReason());
+            postView.setRejectedAt(event.getTimestamp());
             postViewRepository.save(postView);
             log.info("updated PostView status to Rejected for postId: {}", event.getAggregateId());
         });

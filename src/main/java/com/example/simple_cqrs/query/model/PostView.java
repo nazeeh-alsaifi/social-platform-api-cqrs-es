@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "posts_view")
+@Table(name = "posts_view_v1")
 @NoArgsConstructor
 public class PostView {
 
@@ -40,12 +40,6 @@ public class PostView {
     private Instant rejectedAt;
 
     private String rejectionReason;
-
-    @Column(nullable = false)
-    private Integer likeCount = 0;
-
-    @Column(nullable = false)
-    private Integer commentCount = 0;
 
     @Version
     private Long version;
